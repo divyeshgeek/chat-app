@@ -21,13 +21,6 @@ const userSocketMap = new Map(); // {userId: socketId}
 
 io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId;
-  console.log(userId, "A user connected", socket.id);
-  if (userId) {
-    userSocketMap[userId] = socket.id;
-    // io.emit is used to send a message to all connected clients
-    console.log("userSocketMap", userSocketMap);
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
-  }
 
   socket.on("disconnect", () => {
     console.log(userId, "A user disconnected", socket.id);
@@ -35,6 +28,14 @@ io.on("connection", (socket) => {
     console.log("userSocketMap :: after disconnect", userSocketMap);
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
+
+  console.log(userId, "A user connected", socket.id);
+  if (userId) {
+    userSocketMap[userId] = socket.id;
+    // io.emit is used to send a message to all connected clients
+    console.log("userSocketMap", userSocketMap);
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  }
 });
 
 export { io, app, server };
