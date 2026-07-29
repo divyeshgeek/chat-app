@@ -25,12 +25,14 @@ io.on("connection", (socket) => {
   if (userId) {
     userSocketMap[userId] = socket.id;
     // io.emit is used to send a message to all connected clients
+    console.log("userSocketMap", userSocketMap);
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
   }
 
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.id);
     delete userSocketMap[userId];
+    console.log("userSocketMap :: after disconnect", userSocketMap);
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
