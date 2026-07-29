@@ -42,7 +42,6 @@ export const useChatStore = create((set, get) => ({
 
   sendMessage: async (messageData) => {
     const { selectedUser, messages } = get();
-    requestNotificationPermission();
     set({ isSendingMessage: true });
     try {
       const response = await axiosInstance.post(
@@ -50,11 +49,6 @@ export const useChatStore = create((set, get) => ({
         messageData,
       );
       set({ messages: [...messages, response.data] });
-      showNotification({
-        title: `Message sent to ${selectedUser.fullName || selectedUser.name}`,
-        message: response.data.text || "Sent an image",
-        icon: selectedUser.profilePic,
-      });
     } catch {
       toast.error("Failed to send message");
     } finally {
