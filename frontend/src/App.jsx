@@ -10,13 +10,32 @@ import { useAuthStore } from "./store/useAuthStore";
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import { useThemeStore } from "./store/useThemeStore";
+import { showNotification } from "./lib/showNotification";
+import { useChatStore } from "./store/useChatStore";
 
 const App = () => {
   const { theme } = useThemeStore();
-  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
+  const { authUser, checkAuth, isCheckingAuth, onlineUsers, socket } =
+    useAuthStore();
+  const { selectedUser } = useChatStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  useEffect(() => {
+    if (authUser) {
+      socket.on("newMessage", (newMessages) => {
+        // const isMessageSentFromSelectedUser =
+        //   newMessages.senderId === selectedUser._id;
+        // if (!isMessageSentFromSelectedUser) return;
+        showNotification({
+          title: `New message`,
+          message: newMessages?.text || "Sent an image",
+          icon: selectedUser?.profilePic,
+        });
+      });
+    }
+  }, [authUser]);
   console.log(onlineUsers, "onlineUsers");
   if (isCheckingAuth && !authUser) {
     return (
